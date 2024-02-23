@@ -120,9 +120,9 @@ if __name__ == "__main__":
                                         num_pages=config.pages_train)
     
     val_data = util.create_data_partition(
-                                        list_src_train=list_src_val, 
-                                        list_gt_train=list_gt_val, 
-                                        pages=config.pages_train) # limited to the number of training pages
+                                        list_src=list_src_val, 
+                                        list_gt=list_gt_val, 
+                                        num_pages=config.pages_train) # limited to the number of training pages
     
     if config.test == False: # TRAINING MODE
 
