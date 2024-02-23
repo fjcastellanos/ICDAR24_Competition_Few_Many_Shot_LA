@@ -114,12 +114,12 @@ if __name__ == "__main__":
     list_src_val = utilIO.readStringFile(config.db_val_src).split("\n")
     list_gt_val = [item.replace("img-", "pixel-level-gt-") for item in list_src_val]
 
-    train_data = util.create_Validation_and_Training_partitions(
-                                        list_src_train=list_src_train, 
-                                        list_gt_train=list_gt_train, 
-                                        pages=config.pages_train)
+    train_data = util.create_data_partition(
+                                        list_src=list_src_train, 
+                                        list_gt=list_gt_train, 
+                                        num_pages=config.pages_train)
     
-    val_data = util.create_Validation_and_Training_partitions(
+    val_data = util.create_data_partition(
                                         list_src_train=list_src_val, 
                                         list_gt_train=list_gt_val, 
                                         pages=config.pages_train) # limited to the number of training pages

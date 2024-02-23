@@ -7,7 +7,7 @@ import cv2
 import math
 
 
-def create_Validation_and_Training_partitions(list_src, list_gt, num_pages=None):
+def create_data_partition(list_src, list_gt, num_pages=None):
     
     corpora = utilIO.match_SRC_GT_Images(list_src, list_gt)
     random.seed(78)
