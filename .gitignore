@@ -2,6 +2,16 @@
 __pycache__/
 *.py[cod]
 *$py.class
+.vscode
+myDatasets
+datasets
+javi.py
+compresser.py
+intermediateLayers.py
+models
+tests
+*.zip
+
 
 # C extensions
 *.so
