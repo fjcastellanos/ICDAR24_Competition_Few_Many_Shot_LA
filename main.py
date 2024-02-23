@@ -49,11 +49,9 @@ def menu():
 
     parser.add_argument('-m', required=False, help='Pathfile for the model')
     
-    parser.add_argument('-db_train_src', required=True, help='Dataset path for training (src imags)')
-    parser.add_argument('-db_train_gt', required=True, help='Dataset path for training (gt images)')
-
-    parser.add_argument('-db_test_src', required=False, help='Dataset path to test (src imags)')
-    parser.add_argument('-db_test_gt', required=False, help='Dataset path to test (gt images)')
+    parser.add_argument('-db_train_src', required=True, help='File with a list of training path files')
+    parser.add_argument('-db_val_src', required=True, help='File with a list of validation path files')
+    parser.add_argument('-db_test_src', required=False, help='File with a list of testing path files')
 
     parser.add_argument('-aug',   nargs='*',
                         choices=utilConst.AUGMENTATION_CHOICES,
@@ -109,15 +107,22 @@ if __name__ == "__main__":
     utilIO.createParentDirectory(path_model)
     
     input_shape = util.getInputShape(config)
-    
-    list_src_train = utilIO.listFilesRecursive(config.db_train_src)
-    list_gt_train = utilIO.listFilesRecursive(config.db_train_gt)
-    assert(len(list_src_train) == len(list_gt_train))
 
-    train_data, val_data = util.create_Validation_and_Training_partitions(
+    list_src_train = utilIO.readStringFile(config.db_train_src).split("\n")
+    list_gt_train = [item.replace("img-", "pixel-level-gt-") for item in list_src_train]
+
+    list_src_val = utilIO.readStringFile(config.db_val_src).split("\n")
+    list_gt_val = [item.replace("img-", "pixel-level-gt-") for item in list_src_val]
+
+    train_data = util.create_Validation_and_Training_partitions(
                                         list_src_train=list_src_train, 
                                         list_gt_train=list_gt_train, 
-                                        pages_train=config.pages_train)
+                                        pages=config.pages_train)
+    
+    val_data = util.create_Validation_and_Training_partitions(
+                                        list_src_train=list_src_val, 
+                                        list_gt_train=list_gt_val, 
+                                        pages=config.pages_train) # limited to the number of training pages
     
     if config.test == False: # TRAINING MODE
 

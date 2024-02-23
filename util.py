@@ -7,28 +7,16 @@ import cv2
 import math
 
 
-def create_Validation_and_Training_partitions(list_src_train, list_gt_train, pages_train=None):
+def create_Validation_and_Training_partitions(list_src, list_gt, num_pages=None):
     
-    corpora = utilIO.match_SRC_GT_Images(list_src_train, list_gt_train)
+    corpora = utilIO.match_SRC_GT_Images(list_src, list_gt)
     random.seed(78)
     random.shuffle(corpora)
-    num_val_images = math.ceil(0.2*len(corpora))
 
-    if len(list_src_train) == 1:
-        val_data = corpora[0:1]    
-        train_data = corpora[0:1]    
-        return train_data, val_data
-
-    val_data = corpora[0:num_val_images]
-
-    if pages_train is None or pages_train == -1:
-        pages_train = len(corpora)-num_val_images
+    if num_pages == -1:
+        return corpora
     else:
-        val_data = val_data[0:min(pages_train, len(val_data))]
-    assert(pages_train <= (len(corpora)-num_val_images))
-    train_data = corpora[num_val_images:num_val_images+pages_train]
-
-    return train_data, val_data
+        return corpora[0:num_pages]
 
 
 def getInputShape(config):

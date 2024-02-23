@@ -118,6 +118,33 @@ def appendString(content_string, path_file, close_file = True):
         f.close()
     
         
+def writeString(content_string, path_file, close_file = True):
+    assert type(content_string) == str
+    assert type(path_file) == str
+    
+    path_dir = dirname(path_file)
+
+    if not os.path.exists(path_dir):
+        os.makedirs(path_dir, 493)
+            
+    f = open(path_file,"w")
+    f.write(content_string + "\n")
+    
+    if close_file == True:
+        f.close()
+    
+def readStringFile(path_file):
+    assert type(path_file) == str
+
+    f = open(path_file)
+    
+    content = f.read()
+    f.close()
+    
+    assert type(content) == str
+
+    return content
+    
         
 def __remove_attribute_namespace(config, key):
     try:
@@ -149,3 +176,23 @@ def getPathModel(config):
     str_config = "models/modelCNN/"+str_config + ".h5"
     str_config = str_config.replace("datasets","dbs").replace("training", "train").replace("db_train","dtr").replace("pages_train", "pt")
     return str_config
+
+
+'''
+ltrain = ["training/img-p/ej1.png", "training/img-p/ej2.png", "training/img-p/ej3.png",
+     "training/pixel-p/ej1.png", "training/pixel-p/ej2.png", "training/pixel-p/ej3.png" ]
+
+lval = ["validation/img-p/ej1.png", "validation/img-p/ej2.png", "validation/img-p/ej3.png",
+     "validation/pixel-p/ej1.png", "validation/pixel-p/ej2.png", "validation/pixel-p/ej3.png" ]
+
+list_training_data_images = [item for item in ltrain if "/img-" in item]
+list_validation_data_images = [item for item in lval if "/img-" in item]
+
+str_list_training_data_images = "\n".join(list_training_data_images)
+str_list_validation_data_images = "\n".join(list_validation_data_images)
+
+writeString(str_list_training_data_images, "prueba/prueba_train.txt", close_file = True)
+writeString(str_list_validation_data_images, "prueba/prueba_val.txt", close_file = True)
+
+
+'''
