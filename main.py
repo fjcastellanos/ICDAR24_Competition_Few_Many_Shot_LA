@@ -115,10 +115,10 @@ if __name__ == "__main__":
     input_shape = util.getInputShape(config)
 
     list_src_train = utilIO.readStringFile(config.db_train_src).split("\n")
-    list_gt_train = [item.replace("img-", "pixel-level-gt-").replace("jpg", ".png") for item in list_src_train]
+    list_gt_train = [item.replace("img-", "pixel-level-gt-").replace(".jpg", ".png") for item in list_src_train]
 
     list_src_val = utilIO.readStringFile(config.db_val_src).split("\n")
-    list_gt_val = [item.replace("img-", "pixel-level-gt-").replace("jpg", ".png") for item in list_src_val]
+    list_gt_val = [item.replace("img-", "pixel-level-gt-").replace(".jpg", ".png") for item in list_src_val]
 
     train_data = util.create_data_partition(
                                         list_src=list_src_train, 
