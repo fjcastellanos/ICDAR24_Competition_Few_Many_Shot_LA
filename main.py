@@ -57,6 +57,10 @@ def menu():
                         choices=utilConst.AUGMENTATION_CHOICES,
                         default=[utilConst.AUGMENTATION_NONE], 
                         help='Data augmentation modes')
+    
+    parser.add_argument('-lay',
+                        choices=utilConst.LAYER_CHOICES, 
+                        help='Layer of information to be employed.')
 
     parser.add_argument('-npatches', default=-1, dest='n_pa', type=int,   help='Number of patches to be extracted from training data')
     
@@ -69,6 +73,8 @@ def menu():
     parser.add_argument('-f',          default=64,      dest='nb_fil',   type=int,   help='Number of filters')
     parser.add_argument('-k',          default=5,        dest='ker',            type=int,   help='kernel size')
     parser.add_argument('-drop',   default=0.2,        dest='drop',          type=float, help='dropout value')
+    
+    
     
 
     parser.add_argument('-pages_train',   default=-1,      type=int,   help='Number of pages to be used for training. -1 to load all the training set.')
@@ -109,10 +115,10 @@ if __name__ == "__main__":
     input_shape = util.getInputShape(config)
 
     list_src_train = utilIO.readStringFile(config.db_train_src).split("\n")
-    list_gt_train = [item.replace("img-", "pixel-level-gt-") for item in list_src_train]
+    list_gt_train = [item.replace("img-", "pixel-level-gt-").replace("jpg", ".png") for item in list_src_train]
 
     list_src_val = utilIO.readStringFile(config.db_val_src).split("\n")
-    list_gt_val = [item.replace("img-", "pixel-level-gt-") for item in list_src_val]
+    list_gt_val = [item.replace("img-", "pixel-level-gt-").replace("jpg", ".png") for item in list_src_val]
 
     train_data = util.create_data_partition(
                                         list_src=list_src_train, 
@@ -136,8 +142,8 @@ if __name__ == "__main__":
       
       model = CNNmodel.get_model(input_shape, config.no_mask, config.n_la, config.nb_fil, config.ker, dropout=config.drop, stride=2)
       
-      train_generator = util.create_generator(train_data, config.no_mask, config.ba, input_shape, config.n_pa, config.n_an, config.aug)
-      val_generator = util.create_generator(val_data, config.no_mask, config.ba, input_shape, config.n_pa, config.n_an, augmentation_val)
+      train_generator = util.create_generator(train_data, config.no_mask, config.ba, input_shape, config.n_pa, config.n_an, config.aug, config.lay)
+      val_generator = util.create_generator(val_data, config.no_mask, config.ba, input_shape, config.n_pa, config.n_an, augmentation_val, config.lay)
       
       nb_train_pages = len(train_data)
       nb_val_pages = len(val_data)

@@ -93,9 +93,15 @@ def extractRandomSamplesClass(gr, gt, patch_width, patch_height, batch_size, gr_
     if num_coords >= batch_size:
         num_samples = 0
         while (num_samples < batch_size):
-            idx_coord = random.randint(0, num_coords-1)
-            row = potential_training_examples[0][idx_coord]
-            col = potential_training_examples[1][idx_coord]
+            is_CompletelyRandom = random.random() < 0.15
+            
+            if is_CompletelyRandom:
+                row = random.randint(patch_width//2+1, gr.shape[0]-patch_width//2-1)
+                col = random.randint(patch_height//2+1, gr.shape[1]-patch_height//2-1)
+            else:    
+                idx_coord = random.randint(0, num_coords-1)
+                row = potential_training_examples[0][idx_coord]
+                col = potential_training_examples[1][idx_coord]
 
             row = max(patch_width//2+1, row-100)
             col = max(patch_height//2+1, col-50)
@@ -185,8 +191,17 @@ def calculate_mask(gt, window_w, window_h, nb_sequential_patches = -1, batch_siz
     return mask, patch_counter
 
 
-def get_gt_image_and_regions(gt_path_file, nb_sequential_patches, window_w, window_h, batch_size):
-    gt_img = (utilIO.load_gt_image(gt_path_file)[:,:,3] > 128)*1 #Annotations are in alpha channel
+def obtainGTforLayer(gt_img, layer_name):
+
+    color_gt = utilConst.DICT_COLORS_GT[layer_name]
+    color_gt_array = np.array(color_gt)
+    gt_layer = np.all(gt_img == color_gt_array, axis=-1)
+    return gt_layer * 1
+
+def get_gt_image_and_regions(gt_path_file, nb_sequential_patches, window_w, window_h, batch_size, layer_name):
+    gt_img = (utilIO.load_gt_image(gt_path_file)[:,:,:]) #Annotations are in different colors without transparency
+
+    gt_img = obtainGTforLayer(gt_img, layer_name)
 
     regions_mask, n_patches = calculate_mask(gt_img, window_w, window_h, nb_sequential_patches, batch_size)
     gt_img = apply_mask(gt_img, regions_mask=regions_mask)
@@ -197,9 +212,9 @@ def get_gt_image_and_regions(gt_path_file, nb_sequential_patches, window_w, wind
 def normalize_image(img):
     return (255.-img) / 255.
 
-def get_image_with_gt(page_src, page_gt, nb_sequential_patches, window_w, window_h, batch_size, with_mask=False):
+def get_image_with_gt(page_src, page_gt, nb_sequential_patches, window_w, window_h, batch_size, layer_name, with_mask=False):
 
-    gt, regions_mask, n_annotated_patches_real = get_gt_image_and_regions(page_gt, nb_sequential_patches, window_w, window_h, batch_size)
+    gt, regions_mask, n_annotated_patches_real = get_gt_image_and_regions(page_gt, nb_sequential_patches, window_w, window_h, batch_size, layer_name)
     gr = utilIO.load_src_image(page_src)
     gr = normalize_image(gr)
 
@@ -269,11 +284,11 @@ def apply_random_augmentations(gr, gt, regions_mask, augmentation_types, width_o
 
 
 
-def getRandomSamples(page, batch_size, nb_annotated_patches, window_w, window_h, augmentation_types):
+def getRandomSamples(page, batch_size, nb_annotated_patches, window_w, window_h, augmentation_types, layer_name):
     gr_chunks = []
     gt_chunks = []
  
-    gr, gt, regions_mask, n_annotated_patches_real = get_image_with_gt(page[0], page[1], nb_annotated_patches, window_w, window_h, batch_size, True)
+    gr, gt, regions_mask, n_annotated_patches_real = get_image_with_gt(page[0], page[1], nb_annotated_patches, window_w, window_h, batch_size, layer_name, True)
     
     while len(gr_chunks) < batch_size:
         extractRandomSamplesClass(gr, gt, window_w, window_h, 1, gr_chunks, gt_chunks, regions_mask, augmentation_types)
@@ -317,7 +332,7 @@ def get_number_annotated_patches(page, window_w, window_h, number_patches=-1):
             n_annotated_patches_real_total += n_annotated_patches_real
     return n_annotated_patches_real_total
 
-def create_generator(data_pages, no_mask, batch_size, window_shape, nb_patches, nb_annotated_patches, augmentation_types):
+def create_generator(data_pages, no_mask, batch_size, window_shape, nb_patches, nb_annotated_patches, augmentation_types, layer_name):
     if no_mask is None or no_mask == False:
         using_mask = True
     else:
@@ -330,7 +345,7 @@ def create_generator(data_pages, no_mask, batch_size, window_shape, nb_patches, 
         for page in data_pages:
             if utilConst.AUGMENTATION_RANDOM in augmentation_types:
                 assert(nb_patches != -1)
-                yield from getRandomSamples(page, min(batch_size, nb_patches), nb_annotated_patches, window_shape[0], window_shape[1], augmentation_types)
+                yield from getRandomSamples(page, min(batch_size, nb_patches), nb_annotated_patches, window_shape[0], window_shape[1], augmentation_types, layer_name)
             else:
                 assert(nb_annotated_patches == nb_patches)
                 real_patches = get_number_annotated_patches(page, window_shape[0], window_shape[1], nb_annotated_patches)
@@ -770,4 +785,5 @@ def test_model(config, path_model, test_data, window_shape, threshold, with_mask
 
     
     
-    
+
+
