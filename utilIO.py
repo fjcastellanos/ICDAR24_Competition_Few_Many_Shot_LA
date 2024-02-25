@@ -51,8 +51,8 @@ def match_SRC_GT_Images(list_src_images, list_gt_images):
         src_image = list_src_images[idx_image]
         gt_image = list_gt_images[idx_image]
 
-        src_basename = os.path.basename(src_image)
-        gt_basename = os.path.basename(gt_image)
+        src_basename = os.path.basename(src_image).split(".")[0]
+        gt_basename = os.path.basename(gt_image).split(".")[0]
 
         print('*'*80)
         print("Image %d:" % (idx_image))
