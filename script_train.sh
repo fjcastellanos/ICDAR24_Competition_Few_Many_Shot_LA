@@ -17,15 +17,15 @@ for layer_name in "BG" "Para" "Deco" "Text" "Title" "Head"; do
                 		-lay ${layer_name} \
                 		-npatches ${NPATCHES} \
                 		-n_annotated_patches -1 \
-                		-window_w 256 \
-                		-window_h 256 \
+                		-window_w 512 \
+                		-window_h 512 \
 				        -l 5 \
 				        -f 64 \
 				        -k 3 \
 				        -drop 0.2 \
 				        -pages_train -1 \
 				        -e 200 \
-				        -b 64 \
+				        -b 16 \
 				        -verbose 1 \
                 		-res results/res.txt \
 				        -gpu 0 \
