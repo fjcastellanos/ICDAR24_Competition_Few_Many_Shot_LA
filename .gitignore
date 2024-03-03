@@ -11,6 +11,9 @@ intermediateLayers.py
 models
 tests
 *.zip
+dataset
+logs
+nohup.out
 
 
 # C extensions
