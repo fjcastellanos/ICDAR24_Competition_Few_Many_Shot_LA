@@ -98,7 +98,7 @@ The models are saved in the folder "models" automatically, and after testing, th
 
 ## IMPORTANT:
 The files with the list of paths to the images to be used for training and validation do not include GT images.
-For example, the dataset/U-DIADS-Bib-FS/Latin2FS/training.txt may contain the following:
+For example, the file **dataset/U-DIADS-Bib-FS/Latin2FS/training.txt** may contain the following:
 ~~~
   dataset/U-DIADS-Bib-FS/Latin2FS/img-Latin2FS/training/019.jpg
   dataset/U-DIADS-Bib-FS/Latin2FS/img-Latin2FS/training/065.jpg
