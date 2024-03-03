@@ -140,16 +140,21 @@ Note that we used the data structure provided by the organization within the dat
  Therefore, since the list of paths to the images are only the ones within the **img-Latin2FS** folders, the route for each ground truth is automatically calculated by replacing **img-** by **pixel-level-gt-** in the path file.
  
 
-## Prediction with Colab
-After training, an additional parameter **--test** evaluates the model and another parameter **-res results/out.txt** for dumping the results in a file. This is optional, since the results are shown in the console.
-However, for the competition, we used a Google Colab notebook to perform the inference process.
 
-https://colab.research.google.com/drive/1hpc5sY1ee0BuEMNN6IOxNlMZBRt2en53?usp=sharing 
-
-
-## Training with Colab
-Also, there is another Colab notebook for training, but it is not recommended for resource requirements. Note that the following colab is prepared to be provided by the zip file published by the organizers of the competition. 
+## Training
+There is another Colab notebook for training, but it is not recommended for resource requirements. Note that the following Colab is prepared to be provided by the zip file published by the organizers of the competition. 
 
 https://colab.research.google.com/drive/1F2vO3YGHQoIAP5jp0hg-robepSCysrbO?usp=sharing
+
+If you use the repo instead of the Colab, you can find a script that automatizes the training: **script_train.sh**
+This script receives an argument with the name of the dataset. To work, the folder structure should be exactly the same as the previous example, which follows the same structure of the ZIP file provided by the organization. 
+
+
+## Prediction
+After training, an additional parameter **--test** evaluates the model and another parameter **-res results/out.txt** for dumping the results in a file. This is optional since the results are shown in the console.
+
+For the competition, we used a Google Colab notebook to perform the inference process.
+
+https://colab.research.google.com/drive/1hpc5sY1ee0BuEMNN6IOxNlMZBRt2en53?usp=sharing 
 
 
