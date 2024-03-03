@@ -30,6 +30,7 @@ Please, cite the following work for any use of the code or for a reference to th
   * Tensorflow (2.4)
   * opencv-python (4.2.0.32)
 
+There is also a Dockerfile to configure a container with the required packages. 
 
 ## Keras configuration
 
