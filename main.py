@@ -113,6 +113,7 @@ if __name__ == "__main__":
     utilIO.createParentDirectory(path_model)
     
     input_shape = util.getInputShape(config)
+    input_model = (None, None, input_shape[2])
 
     list_src_train = utilIO.readStringFile(config.db_train_src).split("\n")
     list_src_train_filtered = [item for item in list_src_train if item != ""]
@@ -146,7 +147,7 @@ if __name__ == "__main__":
       if utilConst.AUGMENTATION_RANDOM in config.aug:
         augmentation_val = ["random"]
       
-      model = CNNmodel.get_model(input_shape, config.no_mask, config.n_la, config.nb_fil, config.ker, dropout=config.drop, stride=2)
+      model = CNNmodel.get_model(input_model, config.no_mask, config.n_la, config.nb_fil, config.ker, dropout=config.drop, stride=2)
       
       train_generator = util.create_generator(train_data, config.no_mask, config.ba, input_shape, config.n_pa, config.n_an, config.aug, config.lay)
       val_generator = util.create_generator(val_data, config.no_mask, config.ba, input_shape, config.n_pa, config.n_an, augmentation_val, config.lay)

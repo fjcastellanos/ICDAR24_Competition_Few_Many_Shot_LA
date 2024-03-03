@@ -283,6 +283,20 @@ def apply_random_augmentations(gr, gt, regions_mask, augmentation_types, width_o
     return gr_new, gt_new, regions_mask_new, applied_augmentations
 
 
+def getRandomSamplesGivenImage(gr, gt, regions_mask, batch_size, nb_annotated_patches, window_w, window_h, augmentation_types, layer_name):
+    gr_chunks = []
+    gt_chunks = []
+ 
+    while len(gr_chunks) < batch_size:
+        extractRandomSamplesClass(gr, gt, window_w, window_h, 1, gr_chunks, gt_chunks, regions_mask, augmentation_types)
+
+    gr_chunks_arr = np.array(gr_chunks)
+    gt_chunks_arr = np.array(gt_chunks)
+    gt_chunks_arr = np.reshape(gt_chunks_arr, (gt_chunks_arr.shape[0], gt_chunks_arr.shape[1], gt_chunks_arr.shape[2], 1))
+    # convert gr_chunks and gt_chunks to the numpy arrays that are yield below    
+
+    yield gr_chunks_arr, gt_chunks_arr
+
 
 def getRandomSamples(page, batch_size, nb_annotated_patches, window_w, window_h, augmentation_types, layer_name):
     gr_chunks = []
@@ -345,7 +359,11 @@ def create_generator(data_pages, no_mask, batch_size, window_shape, nb_patches, 
         for page in data_pages:
             if utilConst.AUGMENTATION_RANDOM in augmentation_types:
                 assert(nb_patches != -1)
-                yield from getRandomSamples(page, min(batch_size, nb_patches), nb_annotated_patches, window_shape[0], window_shape[1], augmentation_types, layer_name)
+                gr, gt, regions_mask, n_annotated_patches_real = get_image_with_gt(page[0], page[1], nb_annotated_patches, window_shape[0], window_shape[1], min(batch_size, nb_patches), layer_name, True)
+                if np.amax(gt)==0:
+                    continue
+    
+                yield from getRandomSamplesGivenImage(gr, gt, regions_mask, min(batch_size, nb_patches), nb_annotated_patches, window_shape[0], window_shape[1], augmentation_types, layer_name)
             else:
                 assert(nb_annotated_patches == nb_patches)
                 real_patches = get_number_annotated_patches(page, window_shape[0], window_shape[1], nb_annotated_patches)
