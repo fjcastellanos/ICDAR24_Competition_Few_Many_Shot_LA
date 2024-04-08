@@ -30,6 +30,7 @@ Please, cite the following work for any use of the code or for a reference to th
   * Tensorflow (2.4)
   * opencv-python (4.2.0.32)
 
+There is also a Dockerfile to configure a container with the required packages. 
 
 ## Keras configuration
 
@@ -50,8 +51,8 @@ The code needs *Keras* and *TensorFlow* to be installed. It can be easily done t
 The source code is a python code with the main function in "main.py".
 It accepts several parameters to configure the experiments:
   * **-m** `Path used to save the trained model.` (**Example:** *models/Latin2FS_BG.h5*)
-  * **-db_train_src** `Path to the file with a list of paths to the images to be employed as training data.` (**Example:** *dataset/Latin2FS/training.txt*)
-  * **-db_val_src** `Path to the file with a list of paths to the images to be employed as validating data.` (**Example:** *datasets/Latin2FS/validation.txt*)
+  * **-db_train_src** `Path to the file with a list of paths to the images to be employed as training data.` (**Example:** *dataset/U-DIADS-Bib-FS/Latin2FS/training.txt*)
+  * **-db_val_src** `Path to the file with a list of paths to the images to be employed as validating data.` (**Example:** *datasets/U-DIADS-Bib-FS/Latin2FS/validation.txt*)
   * **-aug** `List of data augmentation types for training the model. Possible modes are: "none", "random", "flipH", "flipV", "rot", "scale". `(**Example:** *random scale rot flipV flipH* (to use all possible augmentations)
   * **-window_w** `Window width for the samples extracted from the images. (**Example:** *512*)
   * **-window_h** `Window height for the samples extracted from the images. (**Example:** *512*)
@@ -74,8 +75,8 @@ Example of use:
 ~~~
   python -u main.py
             -m models/Latin2FS_BG.h5
-            -db_train_src dataset/Latin2FS/training.txt 
-            -db_test_src dataset/Latin2FS/validation.txt  
+            -db_train_src dataset/U-DIADS-Bib-FS/Latin2FS/training.txt 
+            -db_test_src dataset/U-DIADS-Bib-FS/Latin2FS/validation.txt  
             -aug random scale rot flipV flipH
             -window_w 512  
             -window_h 512 
@@ -93,20 +94,67 @@ Example of use:
             -b 32
 ~~~
 
-
 The models are saved in the folder "models" automatically, and after testing, the resulting images are saved in folder "test" within the parent folder (not the datasets folder). 
 
+## IMPORTANT:
+The files with the list of paths to the images to be used for training and validation do not include GT images.
+For example, the file **dataset/U-DIADS-Bib-FS/Latin2FS/training.txt** may contain the following:
+~~~
+  dataset/U-DIADS-Bib-FS/Latin2FS/img-Latin2FS/training/019.jpg
+  dataset/U-DIADS-Bib-FS/Latin2FS/img-Latin2FS/training/065.jpg
+  dataset/U-DIADS-Bib-FS/Latin2FS/img-Latin2FS/training/083.jpg
+~~~
 
-## Prediction with Colab
-After training, an additional parameter **--test** evaluates the model and another parameter **-res results/out.txt** for dumping the results in a file. This is optional, since the results are shown in the console.
-However, for the competition, we used a Google Colab notebook to perform the inference process.
+Note that we used the data structure provided by the organization within the dataset directory (asteriscs represent a folder):
+~~~bash
+- **dataset**
+  |__ **U-DIADS-Bib-FS**
+      |__ **Latin2FS**
+      |   |__ **img-Latin2FS**
+      |   |   |__ **training**
+      |   |   |   |__ 019.jpg
+      |   |   |   |__ 065.jpg
+      |   |   |   |__ 083.jpg
+      |   |   |
+      |   |   |__ **validation**
+      |   |       |__ 037.jpg
+      |   |       |__ 077.jpg
+      |   |       |__ ...
+      |   |
+      |   |__ **pixel-level-gt-Latin2FS**
+      |       |__ **training**
+      |       |   |__ 019.png
+      |       |   |__ 065.png
+      |       |   |__ 083.png
+      |       |
+      |       |__ **validation**
+      |           |__ 037.png
+      |           |__ 077.png
+      |           |__ ...
+      |    
+      |__ **Latin14396FS**
+          |__ ...
+~~~
 
-https://colab.research.google.com/drive/1hpc5sY1ee0BuEMNN6IOxNlMZBRt2en53?usp=sharing 
+
+ Therefore, since the list of paths to the images are only the ones within the **img-Latin2FS** folders, the route for each ground truth is automatically calculated by replacing **img-** by **pixel-level-gt-** in the path file.
+ 
 
 
-## Training with Colab
-Also, there is another Colab notebook for training, but it is not recommended for resource requirements. Note that the following colab is prepared to be provided by the zip file published by the organizers of the competition. 
+## Training
+There is another Colab notebook for training, but it is not recommended for resource requirements. Note that the following Colab is prepared to be provided by the zip file published by the organizers of the competition. 
 
 https://colab.research.google.com/drive/1F2vO3YGHQoIAP5jp0hg-robepSCysrbO?usp=sharing
+
+If you use the repo instead of the Colab, you can find a script that automatizes the training: **script_train.sh**
+This script receives an argument with the name of the dataset. To work, the folder structure should be exactly the same as the previous example, which follows the same structure of the ZIP file provided by the organization. 
+
+
+## Prediction
+After training, an additional parameter **--test** evaluates the model and another parameter **-res results/out.txt** for dumping the results in a file. This is optional since the results are shown in the console.
+
+For the competition, we used a Google Colab notebook to perform the inference process.
+
+https://colab.research.google.com/drive/1hpc5sY1ee0BuEMNN6IOxNlMZBRt2en53?usp=sharing 
 
 
