@@ -39,10 +39,10 @@ LAYER_CHOICES = [
 
 DICT_COLORS_GT = {
                 LAYER_BACKGROUND    : (0,0,0),      # Black
-                LAYER_PARATEXT      : (255,255,0),  # Yellow
-                LAYER_DECORATION    : (0,255,255),  # Cyan
+                LAYER_PARATEXT      : (0,255,255),  # Yellow
+                LAYER_DECORATION    : (255,255,0),  # Cyan
                 LAYER_TEXT          : (255,0,255),  # Magenta
-                LAYER_TITLE         : (255,0,0),    # Red
+                LAYER_TITLE         : (0,0,255),    # Red
                 LAYER_HEADINGS      : (0,255,0)     # Lime
 }
 
