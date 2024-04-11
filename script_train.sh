@@ -25,7 +25,7 @@ for layer_name in "BG" "Para" "Deco" "Text" "Title" "Head"; do
 				        -k 3 \
 				        -drop 0.2 \
 				        -pages_train -1 \
-				        -e 200 \
+				        -e 50 \
 				        -b 16 \
 				        -verbose 1 \
                 		-res results/res.txt \
