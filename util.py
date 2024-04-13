@@ -351,6 +351,15 @@ def create_generator(data_pages, no_mask, batch_size, window_shape, nb_patches, 
         using_mask = True
     else:
         using_mask = False 
+        
+    data_pages_filtered = []
+    for page in data_pages:
+        gr, gt, regions_mask, n_annotated_patches_real = get_image_with_gt(page[0], page[1], nb_annotated_patches, window_shape[0], window_shape[1], min(batch_size, nb_patches), layer_name, True)
+        if np.amax(gt)>0:
+            data_pages_filtered.append(page)
+        
+    data_pages = data_pages_filtered
+    
     while(True):
         #print("Shuffle training data...")
         random.shuffle(data_pages)
